@@ -1,17 +1,16 @@
 version: '3.8'
 services:
-  mysqldb:
-    image: mysql:8.0
-    container_name: cruddemo_mysql
+  postgresdb:
+    image: postgres:15
+    container_name: cruddemo_postgres
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: student_tracker
-      MYSQL_USER: springstudent
-      MYSQL_PASSWORD: springstudent
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: student_tracker
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
   app:
     build: .
@@ -19,11 +18,11 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysqldb
+      - postgresdb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/student_tracker?useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: springstudent
-      SPRING_DATASOURCE_PASSWORD: springstudent
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/student_tracker
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_PROFILES_ACTIVE: prod
 
 volumes:
